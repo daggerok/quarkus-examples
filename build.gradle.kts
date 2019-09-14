@@ -1,4 +1,8 @@
+import com.avast.gradle.dockercompose.ComposeExtension
+import com.avast.gradle.dockercompose.DockerComposePlugin
+import io.quarkus.gradle.QuarkusPlugin
 import org.gradle.api.tasks.testing.logging.TestLogEvent.*
+import org.gradle.api.tasks.wrapper.Wrapper.DistributionType.BIN
 
 buildscript {
     repositories {
@@ -38,7 +42,7 @@ subprojects {
         // targetCompatibility = JavaVersion.VERSION_1_8
     }
 
-    apply<io.quarkus.gradle.QuarkusPlugin>()
+    apply<QuarkusPlugin>()
 
     dependencies {
         implementation(enforcedPlatform("io.quarkus:quarkus-bom:0.21.2"))
@@ -61,12 +65,28 @@ subprojects {
             }
         }
     }
+
+    apply<DockerComposePlugin>()
+
+    tasks["composeUp"].dependsOn("quarkusBuild")
+
+    configure<ComposeExtension> {
+        useComposeFiles = listOf("src/main/docker/docker-compose.yaml")
+        removeImages = com.avast.gradle.dockercompose.RemoveImages.Local
+        isIgnorePushFailure = true
+        isRemoveContainers = true
+        projectName = "quarkus"
+        isRemoveOrphans = true
+        isRemoveVolumes = true
+        isForceRecreate = true
+        isBuildBeforeUp = true
+    }
 }
 
 tasks {
     withType<Wrapper> {
         gradleVersion = "5.6.2"
-        distributionType = Wrapper.DistributionType.BIN
+        distributionType = BIN
     }
 }
 

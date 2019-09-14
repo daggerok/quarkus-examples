@@ -1,9 +1,5 @@
-import com.avast.gradle.dockercompose.RemoveImages
-
 plugins {
     kotlin("jvm")
-    id("com.github.ben-manes.versions")
-    id("com.avast.gradle.docker-compose")
 }
 
 apply<io.quarkus.gradle.QuarkusPlugin>()
@@ -21,18 +17,4 @@ dependencies {
     implementation(kotlin("stdlib-jdk8"))
     testImplementation("io.rest-assured:rest-assured")
     testImplementation("io.quarkus:quarkus-junit5")
-}
-
-tasks["composeUp"].dependsOn("quarkusBuild")
-
-dockerCompose {
-    useComposeFiles = listOf("src/main/docker/docker-compose.yaml")
-    projectName = "quarkus"
-    removeImages = RemoveImages.Local
-    isRemoveContainers = true
-    isRemoveOrphans = true
-    isRemoveVolumes = true
-    isForceRecreate = true
-    isBuildBeforeUp = true
-    isIgnorePushFailure = true
 }
