@@ -157,7 +157,7 @@ jobs:
       name: app-1 maven Dockerfile.jvm jdk8
       script:
         - cd $TRAVIS_BUILD_DIR && ./mvnw -f ./app-1/pom.xml clean compile jar:jar quarkus:build -U
-        - docker build -f $TRAVIS_BUILD_DIR/app-1/src/main/docker/Dockerfile.jvm -t quarkus/quarkus-example-jvm .
+        - docker build -f $TRAVIS_BUILD_DIR/app-1/src/main/docker/Dockerfile.jvm -t quarkus/quarkus-example-jvm ./app-1
         - docker run -i --rm --name jvm-app -p 8080:8080 quarkus/quarkus-example-jvm &
         - wait_for 8080
         - sleep 3s
@@ -178,7 +178,7 @@ jobs:
       name: app-1 maven Dockerfile.native jdk8
       script:
         - cd $TRAVIS_BUILD_DIR && ./mvnw -f ./app-1/pom.xml package -Pnative -Dnative-image.docker-build=true -U
-        - docker build -f $TRAVIS_BUILD_DIR/app-1/src/main/docker/Dockerfile.native -t quarkus/quarkus-example-native .
+        - docker build -f $TRAVIS_BUILD_DIR/app-1/src/main/docker/Dockerfile.native -t quarkus/quarkus-example-native ./app-1
         - docker run -i --rm --name native-app -p 8080:8080 quarkus/quarkus-example-native &
         - wait_for 8080
         - sleep 3s
@@ -288,7 +288,7 @@ jobs:
       name: app-2 maven Dockerfile.jvm jdk8
       script:
         - cd $TRAVIS_BUILD_DIR && ./mvnw -f ./app-2/pom.xml clean compile jar:jar quarkus:build -U
-        - docker build -f $TRAVIS_BUILD_DIR/app-2/src/main/docker/Dockerfile.jvm -t quarkus/quarkus-example-jvm .
+        - docker build -f $TRAVIS_BUILD_DIR/app-2/src/main/docker/Dockerfile.jvm -t quarkus/quarkus-example-jvm ./app-2
         - docker run -i --rm --name jvm-app -p 8080:8080 quarkus/quarkus-example-jvm &
         - wait_for 8080
         - sleep 3s
@@ -309,7 +309,7 @@ jobs:
       name: app-2 maven Dockerfile.native jdk8
       script:
         - cd $TRAVIS_BUILD_DIR && ./mvnw -f ./app-2/pom.xml package -Pnative -Dnative-image.docker-build=true -U
-        - docker build -f $TRAVIS_BUILD_DIR/app-2/src/main/docker/Dockerfile.native -t quarkus/quarkus-example-native .
+        - docker build -f $TRAVIS_BUILD_DIR/app-2/src/main/docker/Dockerfile.native -t quarkus/quarkus-example-native ./app-2
         - docker run -i --rm --name native-app -p 8080:8080 quarkus/quarkus-example-native &
         - wait_for 8080
         - sleep 3s
