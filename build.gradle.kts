@@ -1,4 +1,3 @@
-import com.avast.gradle.dockercompose.RemoveImages
 import org.gradle.api.tasks.testing.logging.TestLogEvent.*
 
 buildscript {
@@ -13,6 +12,7 @@ buildscript {
 plugins {
     idea
     java
+    kotlin("jvm") version "1.3.50" apply false
     id("com.github.ben-manes.versions") version "0.25.0" apply false
     id("com.avast.gradle.docker-compose") version "0.9.4" apply false
     // https://github.com/quarkusio/quarkus/issues/3552#issuecomment-524225607
@@ -20,7 +20,7 @@ plugins {
 }
 
 allprojects {
-    version = "0.0.2-SNAPSHOT"
+    version = "0.0.3-SNAPSHOT"
     group = "com.github.daggerok.quarkus"
 
     repositories {

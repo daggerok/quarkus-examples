@@ -1,7 +1,8 @@
 rootProject.name = "quarkus-examples"
 include(
-        ":app-1",
-        ":app-2"
+        // ":app-1",
+        // ":app-2",
+        ":kotlin-app"
 )
 // required by quarkus gradle plugin:
 pluginManagement {
