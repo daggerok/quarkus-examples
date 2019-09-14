@@ -1,0 +1,11 @@
+version: '2.1'
+networks:
+  quarkusnet:
+    driver: bridge
+services:
+  app:
+    build:
+      context: ../../..
+      dockerfile: ./src/main/docker/Dockerfile.jvm
+    networks: [quarkusnet]
+    ports: ['8080:8080']

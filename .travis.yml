@@ -1,0 +1,343 @@
+#dist: xenial
+notifications:
+  email: false
+git:
+  quiet: true
+  depth: 1
+language: java
+jdk: openjdk8
+node_js: lts/*
+python: 3
+service:
+  - docker
+  - xvfb
+addons:
+  apt:
+    update: true
+    packages:
+      - sudo
+      - lsof
+      - wget
+      - bash
+      - curl
+      - jq
+      - libxml2-utils
+      - unzip
+      - docker-ce
+      - python3-dev
+      - python3-pip
+      - python3-six
+      - python3-setuptools
+      - libappindicator1
+      - fonts-liberation
+      - google-chrome-stable
+install: true
+before_install:
+  - docker-compose -v
+  - export PATH=$HOME/.local/bin:$PATH
+  - pip3 install --user $(whoami) --upgrade pip >/dev/null # pip3 -> pip
+  - pip install --user $(whoami) --upgrade docker-compose httpie >/dev/null 2>&1
+  - http --version --debug
+  - docker-compose -v
+  #
+  - source <(curl -s https://raw.githubusercontent.com/daggerok/bash-functions/master/main.bash)
+  - stop_any 80 8001 8002 8080 5432
+stages:
+  - test
+  - maintain
+jobs:
+  include:
+    - stage: test
+      jdk: openjdk8
+      name: gradle jdk8
+      script: cd $TRAVIS_BUILD_DIR && ./gradlew
+    - stage: test
+      jdk: openjdk11
+      name: gradle jdk11
+      script: cd $TRAVIS_BUILD_DIR && ./gradlew
+    - stage: test
+      jdk: openjdk8
+      name: maven jdk8
+      script: cd $TRAVIS_BUILD_DIR && ./mvnw
+    - stage: test
+      jdk: openjdk11
+      name: maven jdk11
+      script: cd $TRAVIS_BUILD_DIR && ./mvnw
+    #
+    - stage: test
+      jdk: openjdk8
+      name: app-1 maven uberJar integration tests jdk8
+      script:
+        - cd $TRAVIS_BUILD_DIR && ./mvnw -f ./app-1/pom.xml -DskipTests package -PuberJar -U
+        - java -jar $TRAVIS_BUILD_DIR/app-1/target/*-runner.jar &
+        - wait_for 8080
+        - http :8080
+        - http :8080/health
+        - http :8080/openapi
+        #- http :8080/metrics
+        - http :8080/swagger-ui
+        #- http :8080/swagger-ui/
+        - http :8080/api/v1/hello
+        - http :8080/api/v1/hello/%20
+        - http :8080/api/v1/hello/maksimko
+        - stop_any 80 8080
+    - stage: test
+      jdk: openjdk11
+      name: app-1 maven uberJar integration tests jdk11
+      script:
+        - cd $TRAVIS_BUILD_DIR && ./mvnw -f ./app-1/pom.xml -DskipTests package -PuberJar -U
+        - java -jar $TRAVIS_BUILD_DIR/app-1/target/*-runner.jar &
+        - wait_for 8080
+        - http :8080
+        - http :8080/health
+        - http :8080/openapi
+        #- http :8080/metrics
+        - http :8080/swagger-ui
+        #- http :8080/swagger-ui/
+        - http :8080/api/v1/hello
+        - http :8080/api/v1/hello/%20
+        - http :8080/api/v1/hello/maksimko
+        - stop_any 80 8080
+    - stage: test
+      jdk: openjdk8
+      name: app-1 maven quarkus integration tests jdk8
+      script:
+        - cd $TRAVIS_BUILD_DIR && ./mvnw -f ./app-1/pom.xml compile jar:jar quarkus:build -U
+        - java -jar $TRAVIS_BUILD_DIR/app-1/target/*-runner.jar &
+        - wait_for 8080
+        - http :8080
+        - http :8080/health
+        - http :8080/openapi
+        #- http :8080/metrics
+        - http :8080/swagger-ui
+        #- http :8080/swagger-ui/
+        - http :8080/api/v1/hello
+        - http :8080/api/v1/hello/%20
+        - http :8080/api/v1/hello/maksimko
+        - stop_any 80 8080
+    - stage: test
+      jdk: openjdk11
+      name: app-1 maven quarkus integration tests jdk11
+      script:
+        - cd $TRAVIS_BUILD_DIR && ./mvnw -f ./app-1/pom.xml compile jar:jar quarkus:build -U
+        - java -jar $TRAVIS_BUILD_DIR/app-1/target/*-runner.jar &
+        - wait_for 8080
+        - http :8080
+        - http :8080/health
+        - http :8080/openapi
+        #- http :8080/metrics
+        - http :8080/swagger-ui
+        #- http :8080/swagger-ui/
+        - http :8080/api/v1/hello
+        - http :8080/api/v1/hello/%20
+        - http :8080/api/v1/hello/maksimko
+        - stop_any 80 8080
+    - stage: test
+      jdk: openjdk8
+      name: app-1 maven docker-compose plugin jdk8
+      script:
+        - cd $TRAVIS_BUILD_DIR && ./mvnw -f ./app-1/pom.xml -P docker compile jar:jar quarkus:build -U
+        - cd $TRAVIS_BUILD_DIR && ./mvnw -f ./app-1/pom.xml -P docker docker-compose:down
+        - cd $TRAVIS_BUILD_DIR && ./mvnw -f ./app-1/pom.xml -P docker docker-compose:up
+        - wait_for 8080
+        - sleep 1s
+        - http :8080
+        - http :8080/health
+        - http :8080/openapi
+        #- http :8080/metrics
+        - http :8080/swagger-ui
+        #- http :8080/swagger-ui/
+        - http :8080/api/v1/hello
+        - http :8080/api/v1/hello/%20
+        - http :8080/api/v1/hello/maksimko
+        - cd $TRAVIS_BUILD_DIR && ./mvnw -f ./app-1/pom.xml -P docker docker-compose:down
+        - stop_any 80 8080
+    - stage: test
+      jdk: openjdk8
+      name: app-1 maven Dockerfile.jvm jdk8
+      script:
+        - cd $TRAVIS_BUILD_DIR && ./mvnw -f ./app-1/pom.xml clean compile jar:jar quarkus:build -U
+        - docker build -f $TRAVIS_BUILD_DIR/app-1/src/main/docker/Dockerfile.jvm -t quarkus/quarkus-example-jvm .
+        - docker run -i --rm --name jvm-app -p 8080:8080 quarkus/quarkus-example-jvm &
+        - wait_for 8080
+        - sleep 3s
+        #
+        - http :8080
+        - http :8080/health
+        - http :8080/openapi
+        #- http :8080/metrics
+        - http :8080/swagger-ui
+        #- http :8080/swagger-ui/
+        - http :8080/api/v1/hello
+        - http :8080/api/v1/hello/%20
+        - http :8080/api/v1/hello/maksimko
+        #
+        - docker rm -f -v jvm-app
+    - stage: test
+      jdk: openjdk8
+      name: app-1 maven Dockerfile.native jdk8
+      script:
+        - cd $TRAVIS_BUILD_DIR && ./mvnw -f ./app-1/pom.xml package -Pnative -Dnative-image.docker-build=true -U
+        - docker build -f $TRAVIS_BUILD_DIR/app-1/src/main/docker/Dockerfile.native -t quarkus/quarkus-example-native .
+        - docker run -i --rm --name native-app -p 8080:8080 quarkus/quarkus-example-native &
+        - wait_for 8080
+        - sleep 3s
+        #
+        - http :8080
+        - http :8080/health
+        - http :8080/openapi
+        #- http :8080/metrics
+        - http :8080/swagger-ui
+        #- http :8080/swagger-ui/
+        - http :8080/api/v1/hello
+        - http :8080/api/v1/hello/%20
+        - http :8080/api/v1/hello/maksimko
+        #
+        - docker rm -f -v native-app
+    #
+    - stage: test
+      jdk: openjdk8
+      name: app-2 maven uberJar integration tests jdk8
+      script:
+        - cd $TRAVIS_BUILD_DIR && ./mvnw -f ./app-2/pom.xml -DskipTests package -PuberJar -U
+        - java -jar $TRAVIS_BUILD_DIR/app-2/target/*-runner.jar &
+        - wait_for 8080
+        - http :8080
+        - http :8080/health
+        - http :8080/openapi
+        #- http :8080/metrics
+        - http :8080/swagger-ui
+        #- http :8080/swagger-ui/
+        - http :8080/api/v1/hello
+        - http :8080/api/v1/hello/%20
+        - http :8080/api/v1/hello/maksimko
+        - stop_any 80 8080
+    - stage: test
+      jdk: openjdk11
+      name: app-2 maven uberJar integration tests jdk11
+      script:
+        - cd $TRAVIS_BUILD_DIR && ./mvnw -f ./app-2/pom.xml -DskipTests package -PuberJar -U
+        - java -jar $TRAVIS_BUILD_DIR/app-2/target/*-runner.jar &
+        - wait_for 8080
+        - http :8080
+        - http :8080/health
+        - http :8080/openapi
+        #- http :8080/metrics
+        - http :8080/swagger-ui
+        #- http :8080/swagger-ui/
+        - http :8080/api/v1/hello
+        - http :8080/api/v1/hello/%20
+        - http :8080/api/v1/hello/maksimko
+        - stop_any 80 8080
+    - stage: test
+      jdk: openjdk8
+      name: app-2 maven quarkus integration tests jdk8
+      script:
+        - cd $TRAVIS_BUILD_DIR && ./mvnw -f ./app-2/pom.xml compile jar:jar quarkus:build -U
+        - java -jar $TRAVIS_BUILD_DIR/app-2/target/*-runner.jar &
+        - wait_for 8080
+        - http :8080
+        - http :8080/health
+        - http :8080/openapi
+        #- http :8080/metrics
+        - http :8080/swagger-ui
+        #- http :8080/swagger-ui/
+        - http :8080/api/v1/hello
+        - http :8080/api/v1/hello/%20
+        - http :8080/api/v1/hello/maksimko
+        - stop_any 80 8080
+    - stage: test
+      jdk: openjdk11
+      name: app-2 maven quarkus integration tests jdk11
+      script:
+        - cd $TRAVIS_BUILD_DIR && ./mvnw -f ./app-2/pom.xml compile jar:jar quarkus:build -U
+        - java -jar $TRAVIS_BUILD_DIR/app-2/target/*-runner.jar &
+        - wait_for 8080
+        - http :8080
+        - http :8080/health
+        - http :8080/openapi
+        #- http :8080/metrics
+        - http :8080/swagger-ui
+        #- http :8080/swagger-ui/
+        - http :8080/api/v1/hello
+        - http :8080/api/v1/hello/%20
+        - http :8080/api/v1/hello/maksimko
+        - stop_any 80 8080
+    - stage: test
+      jdk: openjdk8
+      name: app-2 maven docker-compose plugin jdk8
+      script:
+        - cd $TRAVIS_BUILD_DIR && ./mvnw -f ./app-2/pom.xml -P docker compile jar:jar quarkus:build -U
+        - cd $TRAVIS_BUILD_DIR && ./mvnw -f ./app-2/pom.xml -P docker docker-compose:down
+        - cd $TRAVIS_BUILD_DIR && ./mvnw -f ./app-2/pom.xml -P docker docker-compose:up
+        - wait_for 8080
+        - sleep 1s
+        - http :8080
+        - http :8080/health
+        - http :8080/openapi
+        #- http :8080/metrics
+        - http :8080/swagger-ui
+        #- http :8080/swagger-ui/
+        - http :8080/api/v1/hello
+        - http :8080/api/v1/hello/%20
+        - http :8080/api/v1/hello/maksimko
+        - cd $TRAVIS_BUILD_DIR && ./mvnw -f ./app-2/pom.xml -P docker docker-compose:down
+        - stop_any 80 8080
+    - stage: test
+      jdk: openjdk8
+      name: app-2 maven Dockerfile.jvm jdk8
+      script:
+        - cd $TRAVIS_BUILD_DIR && ./mvnw -f ./app-2/pom.xml clean compile jar:jar quarkus:build -U
+        - docker build -f $TRAVIS_BUILD_DIR/app-2/src/main/docker/Dockerfile.jvm -t quarkus/quarkus-example-jvm .
+        - docker run -i --rm --name jvm-app -p 8080:8080 quarkus/quarkus-example-jvm &
+        - wait_for 8080
+        - sleep 3s
+        #
+        - http :8080
+        - http :8080/health
+        - http :8080/openapi
+        #- http :8080/metrics
+        - http :8080/swagger-ui
+        #- http :8080/swagger-ui/
+        - http :8080/api/v1/hello
+        - http :8080/api/v1/hello/%20
+        - http :8080/api/v1/hello/maksimko
+        #
+        - docker rm -f -v jvm-app
+    - stage: test
+      jdk: openjdk8
+      name: app-2 maven Dockerfile.native jdk8
+      script:
+        - cd $TRAVIS_BUILD_DIR && ./mvnw -f ./app-2/pom.xml package -Pnative -Dnative-image.docker-build=true -U
+        - docker build -f $TRAVIS_BUILD_DIR/app-2/src/main/docker/Dockerfile.native -t quarkus/quarkus-example-native .
+        - docker run -i --rm --name native-app -p 8080:8080 quarkus/quarkus-example-native &
+        - wait_for 8080
+        - sleep 3s
+        #
+        - http :8080
+        - http :8080/health
+        - http :8080/openapi
+        #- http :8080/metrics
+        - http :8080/swagger-ui
+        #- http :8080/swagger-ui/
+        - http :8080/api/v1/hello
+        - http :8080/api/v1/hello/%20
+        - http :8080/api/v1/hello/maksimko
+        #
+        - docker rm -f -v native-app
+    #
+    - stage: maintain
+      jdk: openjdk8
+      name: updates jdk8
+      script: cd $TRAVIS_BUILD_DIR && ./mvnw versions:display-property-updates -U
+    - stage: maintain
+      jdk: openjdk11
+      name: updates jdk11
+      script: cd $TRAVIS_BUILD_DIR && ./mvnw versions:display-property-updates -U
+cache:
+  pip: true
+  packages: true
+  directories:
+    - ~/.m2
+    - ~/.gradle
+    - ~/.docker
