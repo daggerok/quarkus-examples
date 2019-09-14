@@ -1,5 +1,4 @@
 import com.avast.gradle.dockercompose.RemoveImages
-import org.gradle.kotlin.dsl.provider.KotlinScriptPlugin
 
 plugins {
     kotlin("jvm")

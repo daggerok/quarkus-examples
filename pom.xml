@@ -188,7 +188,6 @@
             </compilerPlugins>
             <pluginOptions>
               <option>all-open:annotation=javax.ws.rs.Path</option>
-              <option>all-open:io.quarkus.test.junit.QuarkusTest</option>
             </pluginOptions>
           </configuration>
           <executions>
