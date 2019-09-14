@@ -70,4 +70,4 @@ tasks {
     }
 }
 
-defaultTasks("build")
+defaultTasks("clean", "test", "build")
