@@ -26,7 +26,6 @@ plugins {
 allprojects {
     version = "0.0.3-SNAPSHOT"
     group = "com.github.daggerok.quarkus"
-
     repositories {
         mavenCentral()
         //// not needed, all dependencies should be in central
@@ -36,19 +35,15 @@ allprojects {
 
 subprojects {
     apply<JavaPlugin>()
-
     java {
         sourceCompatibility = JavaVersion.VERSION_1_8
         // targetCompatibility = JavaVersion.VERSION_1_8
     }
-
     apply<QuarkusPlugin>()
-
     dependencies {
         implementation(enforcedPlatform("io.quarkus:quarkus-bom:0.21.2"))
         implementation(enforcedPlatform("io.vavr:vavr:0.10.2"))
     }
-
     tasks {
         test {
             testLogging {
@@ -65,11 +60,8 @@ subprojects {
             }
         }
     }
-
     apply<DockerComposePlugin>()
-
     tasks["composeUp"].dependsOn("quarkusBuild")
-
     configure<ComposeExtension> {
         useComposeFiles = listOf("src/main/docker/docker-compose.yaml")
         removeImages = com.avast.gradle.dockercompose.RemoveImages.Local
