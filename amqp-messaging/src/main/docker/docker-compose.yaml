@@ -1,0 +1,56 @@
+# docker-compose down -v --rmi local ; docker-compose up
+version: '2.1'
+networks:
+  quarkusnet:
+    driver: bridge
+volumes:
+  data: {}
+services:
+  artemis:
+    image: vromero/activemq-artemis:2.8.0-alpine
+    ports: [
+      '5672:5672',
+      '8161:8161',
+      '61616:61616',
+    ]
+    networks: [quarkusnet]
+    volumes: [
+      'data:/var/lib/artemis/data',
+      'data:/var/lib/artemis/etc',
+    ]
+    user: artemis
+    environment:
+      ARTEMIS_USERNAME: admin
+      ARTEMIS_PASSWORD: password
+#  amqp:
+#    image: webcenter/activemq:5.14.3
+#    ports: [
+#      '5672:5672', '8161:8161', '61616:61616',  # <-- amqp, ui, jms
+#     #'1883:1883', '61613:61613', '61614:61614' # <-- mqtt, stomp, ws
+#    ]
+#    networks: [quarkusnet]
+#    volumes: ['data:/opt/activemq/conf', 'data:/data/activemq', 'data:/var/log/activemq']
+#    user: root
+#    environment:
+#      ACTIVEMQ_STATIC_TOPICS: static-topic-1;static-topic-2
+#      ACTIVEMQ_STATIC_QUEUES: static-queue-1;static-queue-2
+#      ACTIVEMQ_ADMIN_LOGIN: admin
+#      ACTIVEMQ_ADMIN_PASSWORD: password
+#      ACTIVEMQ_WRITE_LOGIN: write
+#      ACTIVEMQ_WRITE_PASSWORD: password
+#      ACTIVEMQ_READ_LOGIN: read
+#      ACTIVEMQ_READ_PASSWORD: password
+#      ACTIVEMQ_JMX_LOGIN: jmx
+#      ACTIVEMQ_JMX_PASSWORD: password
+#      ACTIVEMQ_REMOVE_DEFAULT_ACCOUNT: 'true'
+#      ACTIVEMQ_ENABLED_SCHEDULER: 'true'
+#      ACTIVEMQ_CONFIG_MINMEMORY: 8
+#      ACTIVEMQ_CONFIG_MAXMEMORY: 512
+#      ACTIVEMQ_MIN_MEMORY: 8
+#      ACTIVEMQ_MAX_MEMORY: 512
+#  app:
+#    build:
+#      context: ../../..
+#      dockerfile: ./src/main/docker/Dockerfile.jvm
+#    networks: [quarkusnet]
+#    ports: ['8080:8080']

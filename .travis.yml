@@ -66,10 +66,10 @@ jobs:
     #
     - stage: test
       jdk: openjdk8
-      name: kotlin-app maven uberJar integration tests jdk8
+      name: amqp-messaging maven uberJar integration tests jdk8
       script:
-        - cd $TRAVIS_BUILD_DIR && ./mvnw -f ./kotlin-app/pom.xml -DskipTests package -PuberJar -U
-        - java -jar $TRAVIS_BUILD_DIR/kotlin-app/target/*-runner.jar &
+        - cd $TRAVIS_BUILD_DIR && ./mvnw -f ./amqp-messaging/pom.xml -DskipTests package -PuberJar -U
+        - java -jar $TRAVIS_BUILD_DIR/amqp-messaging/target/*-runner.jar &
         - wait_for 8080
         - http :8080
         - http :8080/health
@@ -77,14 +77,16 @@ jobs:
         #- http :8080/metrics
         - http :8080/swagger-ui
         #- http :8080/swagger-ui/
-        - http :8080/hello
+        - http :8080/api/v1/hello
+        - http :8080/api/v1/hello/%20
+        - http :8080/api/v1/hello/maksimko
         - stop_any 80 8080
     - stage: test
       jdk: openjdk11
-      name: kotlin-app maven uberJar integration tests jdk11
+      name: amqp-messaging maven uberJar integration tests jdk11
       script:
-        - cd $TRAVIS_BUILD_DIR && ./mvnw -f ./kotlin-app/pom.xml -DskipTests package -PuberJar -U
-        - java -jar $TRAVIS_BUILD_DIR/kotlin-app/target/*-runner.jar &
+        - cd $TRAVIS_BUILD_DIR && ./mvnw -f ./amqp-messaging/pom.xml -DskipTests package -PuberJar -U
+        - java -jar $TRAVIS_BUILD_DIR/amqp-messaging/target/*-runner.jar &
         - wait_for 8080
         - http :8080
         - http :8080/health
@@ -92,14 +94,16 @@ jobs:
         #- http :8080/metrics
         - http :8080/swagger-ui
         #- http :8080/swagger-ui/
-        - http :8080/hello
+        - http :8080/api/v1/hello
+        - http :8080/api/v1/hello/%20
+        - http :8080/api/v1/hello/maksimko
         - stop_any 80 8080
     - stage: test
       jdk: openjdk8
-      name: kotlin-app maven quarkus integration tests jdk8
+      name: amqp-messaging maven quarkus integration tests jdk8
       script:
-        - cd $TRAVIS_BUILD_DIR && ./mvnw -f ./kotlin-app/pom.xml compile jar:jar quarkus:build -U
-        - java -jar $TRAVIS_BUILD_DIR/kotlin-app/target/*-runner.jar &
+        - cd $TRAVIS_BUILD_DIR && ./mvnw -f ./amqp-messaging/pom.xml compile jar:jar quarkus:build -U
+        - java -jar $TRAVIS_BUILD_DIR/amqp-messaging/target/*-runner.jar &
         - wait_for 8080
         - http :8080
         - http :8080/health
@@ -107,14 +111,16 @@ jobs:
         #- http :8080/metrics
         - http :8080/swagger-ui
         #- http :8080/swagger-ui/
-        - http :8080/hello
+        - http :8080/api/v1/hello
+        - http :8080/api/v1/hello/%20
+        - http :8080/api/v1/hello/maksimko
         - stop_any 80 8080
     - stage: test
       jdk: openjdk11
-      name: kotlin-app maven quarkus integration tests jdk11
+      name: amqp-messaging maven quarkus integration tests jdk11
       script:
-        - cd $TRAVIS_BUILD_DIR && ./mvnw -f ./kotlin-app/pom.xml compile jar:jar quarkus:build -U
-        - java -jar $TRAVIS_BUILD_DIR/kotlin-app/target/*-runner.jar &
+        - cd $TRAVIS_BUILD_DIR && ./mvnw -f ./amqp-messaging/pom.xml compile jar:jar quarkus:build -U
+        - java -jar $TRAVIS_BUILD_DIR/amqp-messaging/target/*-runner.jar &
         - wait_for 8080
         - http :8080
         - http :8080/health
@@ -122,15 +128,17 @@ jobs:
         #- http :8080/metrics
         - http :8080/swagger-ui
         #- http :8080/swagger-ui/
-        - http :8080/hello
+        - http :8080/api/v1/hello
+        - http :8080/api/v1/hello/%20
+        - http :8080/api/v1/hello/maksimko
         - stop_any 80 8080
     - stage: test
       jdk: openjdk8
-      name: kotlin-app maven docker-compose plugin jdk8
+      name: amqp-messaging maven docker-compose plugin jdk8
       script:
-        - cd $TRAVIS_BUILD_DIR && ./mvnw -f ./kotlin-app/pom.xml -P docker compile jar:jar quarkus:build -U
-        - cd $TRAVIS_BUILD_DIR && ./mvnw -f ./kotlin-app/pom.xml -P docker docker-compose:down
-        - cd $TRAVIS_BUILD_DIR && ./mvnw -f ./kotlin-app/pom.xml -P docker docker-compose:up
+        - cd $TRAVIS_BUILD_DIR && ./mvnw -f ./amqp-messaging/pom.xml -P docker compile jar:jar quarkus:build -U
+        - cd $TRAVIS_BUILD_DIR && ./mvnw -f ./amqp-messaging/pom.xml -P docker docker-compose:down
+        - cd $TRAVIS_BUILD_DIR && ./mvnw -f ./amqp-messaging/pom.xml -P docker docker-compose:up
         - wait_for 8080
         - sleep 5s
         - http :8080
@@ -139,15 +147,17 @@ jobs:
         #- http :8080/metrics
         - http :8080/swagger-ui
         #- http :8080/swagger-ui/
-        - http :8080/hello
-        - cd $TRAVIS_BUILD_DIR && ./mvnw -f ./kotlin-app/pom.xml -P docker docker-compose:down
+        - http :8080/api/v1/hello
+        - http :8080/api/v1/hello/%20
+        - http :8080/api/v1/hello/maksimko
+        - cd $TRAVIS_BUILD_DIR && ./mvnw -f ./amqp-messaging/pom.xml -P docker docker-compose:down
         - stop_any 80 8080
     - stage: test
       jdk: openjdk8
-      name: kotlin-app maven Dockerfile.jvm jdk8
+      name: amqp-messaging maven Dockerfile.jvm jdk8
       script:
-        - cd $TRAVIS_BUILD_DIR && ./mvnw -f ./kotlin-app/pom.xml clean compile jar:jar quarkus:build -U
-        - docker build -f $TRAVIS_BUILD_DIR/kotlin-app/src/main/docker/Dockerfile.jvm -t quarkus/quarkus-example-jvm ./kotlin-app
+        - cd $TRAVIS_BUILD_DIR && ./mvnw -f ./amqp-messaging/pom.xml clean compile jar:jar quarkus:build -U
+        - docker build -f $TRAVIS_BUILD_DIR/amqp-messaging/src/main/docker/Dockerfile.jvm -t quarkus/quarkus-example-jvm ./amqp-messaging
         - docker run -i --rm --name jvm-app -p 8080:8080 quarkus/quarkus-example-jvm &
         - wait_for 8080
         - sleep 3s
@@ -158,15 +168,17 @@ jobs:
         #- http :8080/metrics
         - http :8080/swagger-ui
         #- http :8080/swagger-ui/
-        - http :8080/hello
+        - http :8080/api/v1/hello
+        - http :8080/api/v1/hello/%20
+        - http :8080/api/v1/hello/maksimko
         #
         - docker rm -f -v jvm-app
     - stage: test
       jdk: openjdk8
-      name: kotlin-app maven Dockerfile.native jdk8
+      name: amqp-messaging maven Dockerfile.native jdk8
       script:
-        - cd $TRAVIS_BUILD_DIR && ./mvnw -f ./kotlin-app/pom.xml package -Pnative -Dnative-image.docker-build=true -U
-        - docker build -f $TRAVIS_BUILD_DIR/kotlin-app/src/main/docker/Dockerfile.native -t quarkus/quarkus-example-native ./kotlin-app
+        - cd $TRAVIS_BUILD_DIR && ./mvnw -f ./amqp-messaging/pom.xml package -Pnative -Dnative-image.docker-build=true -U
+        - docker build -f $TRAVIS_BUILD_DIR/amqp-messaging/src/main/docker/Dockerfile.native -t quarkus/quarkus-example-native ./amqp-messaging
         - docker run -i --rm --name native-app -p 8080:8080 quarkus/quarkus-example-native &
         - wait_for 8080
         - sleep 3s
@@ -177,9 +189,128 @@ jobs:
         #- http :8080/metrics
         - http :8080/swagger-ui
         #- http :8080/swagger-ui/
-        - http :8080/hello
+        - http :8080/api/v1/hello
+        - http :8080/api/v1/hello/%20
+        - http :8080/api/v1/hello/maksimko
         #
         - docker rm -f -v native-app
+#    #
+#    - stage: test
+#      jdk: openjdk8
+#      name: kotlin-app maven uberJar integration tests jdk8
+#      script:
+#        - cd $TRAVIS_BUILD_DIR && ./mvnw -f ./kotlin-app/pom.xml -DskipTests package -PuberJar -U
+#        - java -jar $TRAVIS_BUILD_DIR/kotlin-app/target/*-runner.jar &
+#        - wait_for 8080
+#        - http :8080
+#        - http :8080/health
+#        - http :8080/openapi
+#        #- http :8080/metrics
+#        - http :8080/swagger-ui
+#        #- http :8080/swagger-ui/
+#        - http :8080/hello
+#        - stop_any 80 8080
+#    - stage: test
+#      jdk: openjdk11
+#      name: kotlin-app maven uberJar integration tests jdk11
+#      script:
+#        - cd $TRAVIS_BUILD_DIR && ./mvnw -f ./kotlin-app/pom.xml -DskipTests package -PuberJar -U
+#        - java -jar $TRAVIS_BUILD_DIR/kotlin-app/target/*-runner.jar &
+#        - wait_for 8080
+#        - http :8080
+#        - http :8080/health
+#        - http :8080/openapi
+#        #- http :8080/metrics
+#        - http :8080/swagger-ui
+#        #- http :8080/swagger-ui/
+#        - http :8080/hello
+#        - stop_any 80 8080
+#    - stage: test
+#      jdk: openjdk8
+#      name: kotlin-app maven quarkus integration tests jdk8
+#      script:
+#        - cd $TRAVIS_BUILD_DIR && ./mvnw -f ./kotlin-app/pom.xml compile jar:jar quarkus:build -U
+#        - java -jar $TRAVIS_BUILD_DIR/kotlin-app/target/*-runner.jar &
+#        - wait_for 8080
+#        - http :8080
+#        - http :8080/health
+#        - http :8080/openapi
+#        #- http :8080/metrics
+#        - http :8080/swagger-ui
+#        #- http :8080/swagger-ui/
+#        - http :8080/hello
+#        - stop_any 80 8080
+#    - stage: test
+#      jdk: openjdk11
+#      name: kotlin-app maven quarkus integration tests jdk11
+#      script:
+#        - cd $TRAVIS_BUILD_DIR && ./mvnw -f ./kotlin-app/pom.xml compile jar:jar quarkus:build -U
+#        - java -jar $TRAVIS_BUILD_DIR/kotlin-app/target/*-runner.jar &
+#        - wait_for 8080
+#        - http :8080
+#        - http :8080/health
+#        - http :8080/openapi
+#        #- http :8080/metrics
+#        - http :8080/swagger-ui
+#        #- http :8080/swagger-ui/
+#        - http :8080/hello
+#        - stop_any 80 8080
+#    - stage: test
+#      jdk: openjdk8
+#      name: kotlin-app maven docker-compose plugin jdk8
+#      script:
+#        - cd $TRAVIS_BUILD_DIR && ./mvnw -f ./kotlin-app/pom.xml -P docker compile jar:jar quarkus:build -U
+#        - cd $TRAVIS_BUILD_DIR && ./mvnw -f ./kotlin-app/pom.xml -P docker docker-compose:down
+#        - cd $TRAVIS_BUILD_DIR && ./mvnw -f ./kotlin-app/pom.xml -P docker docker-compose:up
+#        - wait_for 8080
+#        - sleep 5s
+#        - http :8080
+#        - http :8080/health
+#        - http :8080/openapi
+#        #- http :8080/metrics
+#        - http :8080/swagger-ui
+#        #- http :8080/swagger-ui/
+#        - http :8080/hello
+#        - cd $TRAVIS_BUILD_DIR && ./mvnw -f ./kotlin-app/pom.xml -P docker docker-compose:down
+#        - stop_any 80 8080
+#    - stage: test
+#      jdk: openjdk8
+#      name: kotlin-app maven Dockerfile.jvm jdk8
+#      script:
+#        - cd $TRAVIS_BUILD_DIR && ./mvnw -f ./kotlin-app/pom.xml clean compile jar:jar quarkus:build -U
+#        - docker build -f $TRAVIS_BUILD_DIR/kotlin-app/src/main/docker/Dockerfile.jvm -t quarkus/quarkus-example-jvm ./kotlin-app
+#        - docker run -i --rm --name jvm-app -p 8080:8080 quarkus/quarkus-example-jvm &
+#        - wait_for 8080
+#        - sleep 3s
+#        #
+#        - http :8080
+#        - http :8080/health
+#        - http :8080/openapi
+#        #- http :8080/metrics
+#        - http :8080/swagger-ui
+#        #- http :8080/swagger-ui/
+#        - http :8080/hello
+#        #
+#        - docker rm -f -v jvm-app
+#    - stage: test
+#      jdk: openjdk8
+#      name: kotlin-app maven Dockerfile.native jdk8
+#      script:
+#        - cd $TRAVIS_BUILD_DIR && ./mvnw -f ./kotlin-app/pom.xml package -Pnative -Dnative-image.docker-build=true -U
+#        - docker build -f $TRAVIS_BUILD_DIR/kotlin-app/src/main/docker/Dockerfile.native -t quarkus/quarkus-example-native ./kotlin-app
+#        - docker run -i --rm --name native-app -p 8080:8080 quarkus/quarkus-example-native &
+#        - wait_for 8080
+#        - sleep 3s
+#        #
+#        - http :8080
+#        - http :8080/health
+#        - http :8080/openapi
+#        #- http :8080/metrics
+#        - http :8080/swagger-ui
+#        #- http :8080/swagger-ui/
+#        - http :8080/hello
+#        #
+#        - docker rm -f -v native-app
 #    #
 #    - stage: test
 #      jdk: openjdk8
