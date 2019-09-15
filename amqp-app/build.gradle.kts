@@ -1,13 +1,10 @@
-plugins {
-    kotlin("jvm")
-}
-
+// plugins {
+//     id("io.quarkus") version "0.21.2" apply false
+// }
 apply<io.quarkus.gradle.QuarkusPlugin>()
-apply<org.jetbrains.kotlin.gradle.plugin.KotlinPlatformJvmPlugin>()
 
 dependencies {
-    implementation(kotlin("stdlib-jdk8"))
-    implementation("io.quarkus:quarkus-kotlin")
+    implementation("io.quarkus:quarkus-smallrye-reactive-messaging-amqp")
     implementation("io.quarkus:quarkus-jsonp")
     implementation("io.quarkus:quarkus-jsonb")
     implementation("io.quarkus:quarkus-resteasy")

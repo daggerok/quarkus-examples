@@ -1,5 +1,6 @@
 rootProject.name = "quarkus-examples"
 include(
+        ":amqp-app",
         ":kotlin-app",
         ":app-2",
         ":app-1"

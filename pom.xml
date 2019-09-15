@@ -33,6 +33,7 @@
   </properties>
 
   <modules>
+    <module>amqp-app</module>
     <module>kotlin-app</module>
     <module>app-2</module>
     <module>app-1</module>

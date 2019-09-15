@@ -9,16 +9,12 @@
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
-  <artifactId>kotlin-app</artifactId>
+  <artifactId>amqp-app</artifactId>
 
   <dependencies>
     <dependency>
-      <groupId>org.jetbrains.kotlin</groupId>
-      <artifactId>kotlin-stdlib-jdk8</artifactId>
-    </dependency>
-    <dependency>
       <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-kotlin</artifactId>
+      <artifactId>quarkus-smallrye-reactive-messaging-amqp</artifactId>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
@@ -52,27 +48,7 @@
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-arc</artifactId>
     </dependency>
-    <dependency>
-      <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-junit5</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>io.rest-assured</groupId>
-      <artifactId>rest-assured</artifactId>
-      <scope>test</scope>
-    </dependency>
   </dependencies>
-
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.jetbrains.kotlin</groupId>
-        <artifactId>kotlin-maven-plugin</artifactId>
-        <version>${kotlin.version}</version>
-      </plugin>
-    </plugins>
-  </build>
 
   <profiles>
     <profile>
