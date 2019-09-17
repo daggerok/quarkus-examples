@@ -13,12 +13,12 @@
   <artifactId>amqp-messaging</artifactId>
 
   <dependencies>
-    <dependency>
+    <!--<dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
       <optional>true</optional>
       <scope>provided</scope>
-    </dependency>
+    </dependency>-->
     <dependency>
       <groupId>io.vavr</groupId>
       <artifactId>vavr</artifactId>
