@@ -3,6 +3,7 @@ Quarkus micro-profile examples using Gradle / Maven build tools.
 
 _links:_
 
+* https://github.com/daggerok/quarkus-thymeleaf-mvc
 * https://lordofthejars.github.io/quarkus-cheat-sheet/
 
 NOTE 1: _see [.travis.yml](.travis.yml)_
