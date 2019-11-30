@@ -5,6 +5,7 @@ _links:_
 
 * https://github.com/daggerok/quarkus-thymeleaf-mvc
 * https://lordofthejars.github.io/quarkus-cheat-sheet/
+* https://github.com/kabir/blog-quarkus-ui-development
 
 NOTE 1: _see [.travis.yml](.travis.yml)_
 
