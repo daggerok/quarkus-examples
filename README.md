@@ -3,6 +3,7 @@ Quarkus micro-profile examples using Gradle / Maven build tools.
 
 _links:_
 
+* https://github.com/daggerok/quarkus-websocket-sse
 * https://github.com/daggerok/quarkus-thymeleaf-mvc
 * https://lordofthejars.github.io/quarkus-cheat-sheet/
 * https://github.com/kabir/blog-quarkus-ui-development
