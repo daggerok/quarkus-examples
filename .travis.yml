@@ -62,7 +62,6 @@ jobs:
       after_script: docker-compose -f $TRAVIS_BUILD_DIR/amqp-messaging/src/main/docker/docker-compose.yaml down -v --rmi local
     #
     - stage: test
-      jdk: openjdk8
       name: amqp-messaging maven uberJar integration tests jdk8
       before_script: docker-compose -f $TRAVIS_BUILD_DIR/amqp-messaging/src/main/docker/docker-compose.yaml up -d
       script:
@@ -108,7 +107,6 @@ jobs:
         - stop_any 80 8080
       after_script: docker-compose -f $TRAVIS_BUILD_DIR/amqp-messaging/src/main/docker/docker-compose.yaml down -v --rmi local
     - stage: test
-      jdk: openjdk8
       name: amqp-messaging maven quarkus integration tests jdk8
       before_script: docker-compose -f $TRAVIS_BUILD_DIR/amqp-messaging/src/main/docker/docker-compose.yaml up -d
       script:
@@ -174,7 +172,6 @@ jobs:
 #        - cd $TRAVIS_BUILD_DIR && ./mvnw -f ./amqp-messaging/pom.xml -P docker docker-compose:down
 #        - stop_any 80 8080
     - stage: test
-      jdk: openjdk8
       name: amqp-messaging maven Dockerfile.jvm jdk8
       script:
         - cd $TRAVIS_BUILD_DIR && ./mvnw -f ./amqp-messaging/pom.xml clean compile jar:jar quarkus:build -U
@@ -195,7 +192,6 @@ jobs:
         #
         - docker rm -f -v jvm-app
     - stage: test
-      jdk: openjdk8
       name: amqp-messaging maven Dockerfile.native jdk8
       script:
         - cd $TRAVIS_BUILD_DIR && ./mvnw -f ./amqp-messaging/pom.xml package -Pnative -Dnative-image.docker-build=true -U
@@ -217,7 +213,6 @@ jobs:
         - docker rm -f -v native-app
 #    #
 #    - stage: test
-#      jdk: openjdk8
 #      name: kotlin-app maven uberJar integration tests jdk8
 #      script:
 #        - cd $TRAVIS_BUILD_DIR && ./mvnw -f ./kotlin-app/pom.xml -DskipTests package -PuberJar -U
@@ -247,7 +242,6 @@ jobs:
 #        - http :8080/hello
 #        - stop_any 80 8080
 #    - stage: test
-#      jdk: openjdk8
 #      name: kotlin-app maven quarkus integration tests jdk8
 #      script:
 #        - cd $TRAVIS_BUILD_DIR && ./mvnw -f ./kotlin-app/pom.xml compile jar:jar quarkus:build -U
@@ -277,7 +271,6 @@ jobs:
 #        - http :8080/hello
 #        - stop_any 80 8080
 #    - stage: test
-#      jdk: openjdk8
 #      name: kotlin-app maven docker-compose plugin jdk8
 #      script:
 #        - cd $TRAVIS_BUILD_DIR && ./mvnw -f ./kotlin-app/pom.xml -P docker compile jar:jar quarkus:build -U
@@ -295,7 +288,6 @@ jobs:
 #        - cd $TRAVIS_BUILD_DIR && ./mvnw -f ./kotlin-app/pom.xml -P docker docker-compose:down
 #        - stop_any 80 8080
 #    - stage: test
-#      jdk: openjdk8
 #      name: kotlin-app maven Dockerfile.jvm jdk8
 #      script:
 #        - cd $TRAVIS_BUILD_DIR && ./mvnw -f ./kotlin-app/pom.xml clean compile jar:jar quarkus:build -U
@@ -314,7 +306,6 @@ jobs:
 #        #
 #        - docker rm -f -v jvm-app
 #    - stage: test
-#      jdk: openjdk8
 #      name: kotlin-app maven Dockerfile.native jdk8
 #      script:
 #        - cd $TRAVIS_BUILD_DIR && ./mvnw -f ./kotlin-app/pom.xml package -Pnative -Dnative-image.docker-build=true -U
@@ -334,7 +325,6 @@ jobs:
 #        - docker rm -f -v native-app
 #    #
 #    - stage: test
-#      jdk: openjdk8
 #      name: app-1 maven uberJar integration tests jdk8
 #      script:
 #        - cd $TRAVIS_BUILD_DIR && ./mvnw -f ./app-1/pom.xml -DskipTests package -PuberJar -U
@@ -368,7 +358,6 @@ jobs:
 #        - http :8080/api/v1/hello/maksimko
 #        - stop_any 80 8080
 #    - stage: test
-#      jdk: openjdk8
 #      name: app-1 maven quarkus integration tests jdk8
 #      script:
 #        - cd $TRAVIS_BUILD_DIR && ./mvnw -f ./app-1/pom.xml compile jar:jar quarkus:build -U
@@ -402,7 +391,6 @@ jobs:
 #        - http :8080/api/v1/hello/maksimko
 #        - stop_any 80 8080
 #    - stage: test
-#      jdk: openjdk8
 #      name: app-1 maven docker-compose plugin jdk8
 #      script:
 #        - cd $TRAVIS_BUILD_DIR && ./mvnw -f ./app-1/pom.xml -P docker compile jar:jar quarkus:build -U
@@ -422,7 +410,6 @@ jobs:
 #        - cd $TRAVIS_BUILD_DIR && ./mvnw -f ./app-1/pom.xml -P docker docker-compose:down
 #        - stop_any 80 8080
 #    - stage: test
-#      jdk: openjdk8
 #      name: app-1 maven Dockerfile.jvm jdk8
 #      script:
 #        - cd $TRAVIS_BUILD_DIR && ./mvnw -f ./app-1/pom.xml clean compile jar:jar quarkus:build -U
@@ -443,7 +430,6 @@ jobs:
 #        #
 #        - docker rm -f -v jvm-app
 #    - stage: test
-#      jdk: openjdk8
 #      name: app-1 maven Dockerfile.native jdk8
 #      script:
 #        - cd $TRAVIS_BUILD_DIR && ./mvnw -f ./app-1/pom.xml package -Pnative -Dnative-image.docker-build=true -U
@@ -465,7 +451,6 @@ jobs:
 #        - docker rm -f -v native-app
 #    #
 #    - stage: test
-#      jdk: openjdk8
 #      name: app-2 maven uberJar integration tests jdk8
 #      script:
 #        - cd $TRAVIS_BUILD_DIR && ./mvnw -f ./app-2/pom.xml -DskipTests package -PuberJar -U
@@ -499,7 +484,6 @@ jobs:
 #        - http :8080/api/v1/hello/maksimko
 #        - stop_any 80 8080
 #    - stage: test
-#      jdk: openjdk8
 #      name: app-2 maven quarkus integration tests jdk8
 #      script:
 #        - cd $TRAVIS_BUILD_DIR && ./mvnw -f ./app-2/pom.xml compile jar:jar quarkus:build -U
@@ -533,7 +517,6 @@ jobs:
 #        - http :8080/api/v1/hello/maksimko
 #        - stop_any 80 8080
 #    - stage: test
-#      jdk: openjdk8
 #      name: app-2 maven docker-compose plugin jdk8
 #      script:
 #        - cd $TRAVIS_BUILD_DIR && ./mvnw -f ./app-2/pom.xml -P docker compile jar:jar quarkus:build -U
@@ -553,7 +536,6 @@ jobs:
 #        - cd $TRAVIS_BUILD_DIR && ./mvnw -f ./app-2/pom.xml -P docker docker-compose:down
 #        - stop_any 80 8080
 #    - stage: test
-#      jdk: openjdk8
 #      name: app-2 maven Dockerfile.jvm jdk8
 #      script:
 #        - cd $TRAVIS_BUILD_DIR && ./mvnw -f ./app-2/pom.xml clean compile jar:jar quarkus:build -U
@@ -574,7 +556,6 @@ jobs:
 #        #
 #        - docker rm -f -v jvm-app
 #    - stage: test
-#      jdk: openjdk8
 #      name: app-2 maven Dockerfile.native jdk8
 #      script:
 #        - cd $TRAVIS_BUILD_DIR && ./mvnw -f ./app-2/pom.xml package -Pnative -Dnative-image.docker-build=true -U
@@ -596,7 +577,6 @@ jobs:
 #        - docker rm -f -v native-app
 #    #
     - stage: maintain
-      jdk: openjdk8
       name: updates jdk8
       script: cd $TRAVIS_BUILD_DIR && ./mvnw versions:display-property-updates -U
     - stage: maintain
