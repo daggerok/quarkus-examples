@@ -1,0 +1,99 @@
+name: CI
+on: [push]
+jobs:
+  build-linux:
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        java: [11]
+    runs-on: ${{ matrix.os }}
+    name: qute-mvc on ${{ matrix.os }} with java-${{ matrix.java }}
+    steps:
+      - name: Git clone
+        uses: actions/checkout@v1
+      - name: Setup java
+        uses: actions/setup-java@v1
+        with:
+          java-version: ${{ matrix.java }}
+      - name: Set up maven
+        uses: stCarolas/setup-maven@v3
+        with:
+          maven-version: 3.6.3
+      - name: Cache maven
+        uses: actions/cache@v1
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+      - name: Maven build
+        run: ./mvnw -f qute-mvc
+      - name: Test qute-mvc
+        run: |
+          java -jar $GITHUB_WORKSPACE/qute-mvc/target/*-runner.jar &
+          sudo apt-get update -yqq
+          sudo apt-get install -yqq httpie
+          http get :8080/api/v1/my-resource
+
+  build-macOS:
+    strategy:
+      matrix:
+        os: [macos-latest]
+        java: [11]
+    runs-on: ${{ matrix.os }}
+    name: qute-mvc on ${{ matrix.os }} with java-${{ matrix.java }}
+    steps:
+      - name: Git clone
+        uses: actions/checkout@v1
+      - name: Setup java
+        uses: actions/setup-java@v1
+        with:
+          java-version: ${{ matrix.java }}
+      - name: Set up maven
+        uses: stCarolas/setup-maven@v3
+        with:
+          maven-version: 3.6.3
+      - name: Cache maven
+        uses: actions/cache@v1
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+      - name: Maven build
+        run: ./mvnw -f qute-mvc
+      - name: Test qute-mvc
+        run: |
+          java -jar $GITHUB_WORKSPACE/qute-mvc/target/*-runner.jar &
+          brew reinstall curl httpie
+          http get :8080/api/v1/my-resource
+
+
+  build-windows:
+    strategy:
+      matrix:
+        java: [11]
+        os: [windows-latest]
+    runs-on: ${{ matrix.os }}
+    name: qute-mvc on ${{ matrix.os }} with java-${{ matrix.java }}
+    steps:
+      - name: Git clone
+        uses: actions/checkout@v1
+      - name: Setup java
+        uses: actions/setup-java@v1
+        with:
+          java-version: ${{ matrix.java }}
+      - name: Set up maven
+        uses: stCarolas/setup-maven@v3
+        with:
+          maven-version: 3.6.3
+      - name: Run maven build
+        shell: cmd
+        run: call mvnw.cmd -Dfile.encoding="UTF-8" -f %GITHUB_WORKSPACE%\qute-mvc
+      - name: Cache maven
+        uses: actions/cache@v1
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
