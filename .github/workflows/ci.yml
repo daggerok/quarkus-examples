@@ -65,7 +65,7 @@ jobs:
       - name: Test qute-mvc
         run: |
           java -jar $GITHUB_WORKSPACE/qute-mvc/target/*-runner.jar &
-          brew reinstall curl httpie
+          brew reinstall httpie
           http get :8080/api/v1/my-resource
 
 
