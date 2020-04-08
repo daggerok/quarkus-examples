@@ -15,6 +15,18 @@ mvn io.quarkus:quarkus-maven-plugin:1.3.2.Final:create \
     -DbuildTool=gradle
 ```
 
+## jvm
+
+```bash
+./gradlew clean quarkusBuild ; ./gradlew dockerBuild dockerRun
+```
+
+## native
+
+```bash
+./gradlew clean quarkusBuild buildNative --docker-build=true ; QUARKUS_NATIVE=true ./gradlew dockerBuild dockerRun
+```
+
 ## Running the application in dev mode
 
 You can run your application in dev mode that enables live coding using:

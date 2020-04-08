@@ -47,7 +47,7 @@ jobs:
             ${{ runner.os }}-maven-
       - run: sudo apt-get install --fix-missing httpie
       - run: cd $GITHUB_WORKSPACE/qute-gradle-mvc && ./gradlew clean quarkusBuild buildNative --docker-build=true
-      - run: cd $GITHUB_WORKSPACE/qute-gradle-mvc && QUARKUS_NATIVE=true ./gradlew dockerBuild dockerStart
+      - run: cd $GITHUB_WORKSPACE/qute-gradle-mvc && QUARKUS_NATIVE=1 ./gradlew dockerBuild dockerStart
       - run: |
           cd $GITHUB_WORKSPACE/qute-gradle-mvc
           ( ./gradlew dockerLogs & ) || true
