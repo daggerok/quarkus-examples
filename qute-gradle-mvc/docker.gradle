@@ -1,0 +1,53 @@
+String getOrUndefined(String envVar, String sysProp, String defaultValue = "undefined") {
+  System.getenv(envVar.toUpperCase())
+      ?: project.findProperty(sysProp)
+      ?: defaultValue
+}
+
+def os = org.apache.tools.ant.taskdefs.condition.Os
+def var = [
+    isWindows: os.isFamily(os.FAMILY_WINDOWS),
+    dockerFile: "" != getOrUndefined("QUARKUS_NATIVE", "quarkus.native", "") ? "Dockerfile.native" : "Dockerfile.jvm",
+    tag: """${getOrUndefined("DOCKER_USERNAME", "docker.username", "daggerok")}/${project.name}:${project.version}""",
+]
+
+task dockerBuild(type: Exec) {
+  shouldRunAfter("clean", "test", "assemble", "build", "quarkusBuild", "buildNative")
+  if (var.isWindows) commandLine("cmd", "/c", "docker build -t ${var.tag} -f .\\src\\main\\docker\\${var.dockerFile} $projectDir")
+  else commandLine("sh", "-c", "docker build -t ${var.tag} -f ./src/main/docker/${var['dockerFile']} $projectDir")
+  workingDir = projectDir
+}
+
+task dockerRun(type: Exec) {
+  shouldRunAfter("clean", "test", "assemble", "build", "quarkusBuild", "buildNative", "dockerBuild")
+  def cmd = "docker run --rm -i -p 8080:8080 --name ${project.name} ${var.tag}"
+  if (var.isWindows) commandLine("cmd", "/c", "${cmd}")
+  else commandLine("sh", "-c", "${cmd}")
+  workingDir = projectDir
+}
+
+task dockerStart(type: Exec) {
+  shouldRunAfter("clean", "test", "assemble", "build", "quarkusBuild", "buildNative", "dockerBuild")
+  def cmd = "docker run --rm -d -p 8080:8080 --name ${project.name} ${var.tag}"
+  if (var.isWindows) commandLine("cmd", "/c", "${cmd}")
+  else commandLine("sh", "-c", "${cmd}")
+  workingDir = projectDir
+}
+
+task dockerLogs(type: Exec) {
+  shouldRunAfter("clean", "test", "assemble", "build", "quarkusBuild", "buildNative", "dockerBuild", "dockerRun", "dockerStart")
+  def cmd = "docker logs -f -t ${project.name}"
+  if (var.isWindows) commandLine("cmd", "/c", "${cmd}")
+  else commandLine("sh", "-c", "${cmd}")
+  workingDir = projectDir
+  ignoreExitValue = true
+}
+
+task dockerStop(type: Exec) {
+  shouldRunAfter("clean", "test", "assemble", "build", "quarkusBuild", "buildNative", "dockerBuild", "dockerRun", "dockerStart", "dockerLogs")
+  def cmd = "docker rm -f -v ${project.name}"
+  if (var.isWindows) commandLine("cmd", "/c", "${cmd}")
+  else commandLine("sh", "-c", "${cmd}")
+  workingDir = projectDir
+  ignoreExitValue = true
+}

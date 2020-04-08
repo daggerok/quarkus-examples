@@ -1,12 +1,13 @@
 pluginManagement {
-    repositories {
-        mavenLocal()
-        mavenCentral()
-        gradlePluginPortal()
-    }
-    plugins {
-      id 'io.quarkus' version "${quarkusPluginVersion}"
-    }
+  repositories {
+    // mavenLocal()
+    mavenCentral()
+    gradlePluginPortal()
+  }
+  plugins {
+    id("io.quarkus") version "${quarkusVersion}"
+    id("com.github.ben-manes.versions") version "${versionsPluginVersion}"
+  }
 }
 
-rootProject.name='qute-gradle-mvc'
+rootProject.name = "${name}"

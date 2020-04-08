@@ -1,6 +1,7 @@
 plugins {
-    id 'java'
-    id 'io.quarkus'
+    id("java")
+    id("io.quarkus")
+    id("com.github.ben-manes.versions")
 }
 
 repositories {
@@ -9,27 +10,56 @@ repositories {
 }
 
 dependencies {
-    implementation 'io.quarkus:quarkus-resteasy-qute'
-    implementation enforcedPlatform("${quarkusPlatformGroupId}:${quarkusPlatformArtifactId}:${quarkusPlatformVersion}")
-    implementation 'io.quarkus:quarkus-resteasy'
+    implementation("io.quarkus:quarkus-resteasy-qute")
+    implementation(enforcedPlatform("io.quarkus:quarkus-universe-bom:${quarkusVersion}"))
+    implementation("io.quarkus:quarkus-resteasy")
+    // implementation("javax.activation:activation:1.1.1")
 
-    testImplementation 'io.quarkus:quarkus-junit5'
-    testImplementation 'io.rest-assured:rest-assured'
+    testImplementation("io.quarkus:quarkus-junit5")
+    testImplementation("io.rest-assured:rest-assured")
 }
 
-group 'com.github.daggerok'
-version '1.0.0-SNAPSHOT'
-
 compileJava {
-    options.encoding = 'UTF-8'
-    options.compilerArgs << '-parameters'
+    options.encoding = "${encoding}"
+    options.compilerArgs << "-parameters"
 }
 
 compileTestJava {
-    options.encoding = 'UTF-8'
+    options.encoding = "${encoding}"
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_11
-    targetCompatibility = JavaVersion.VERSION_11
+    def javaVersion =  JavaVersion.VERSION_11
+    sourceCompatibility = javaVersion
+    targetCompatibility = javaVersion
 }
+
+test {
+    useJUnitPlatform()
+    // systemProperty("quarkus.test.profile", "foo")
+    if (System.getProperty("native") != "it") { // exclude IT tests if command is not: gradle -Dnative=it
+        exclude(
+            "**/*IT.class"
+        )
+    }
+    testLogging {
+        showExceptions = true
+        showStandardStreams = true
+        def ev = org.gradle.api.tasks.testing.logging.TestLogEvent
+        events(
+            ev.PASSED,
+            ev.SKIPPED,
+            ev.FAILED
+        )
+    }
+}
+
+wrapper {
+    gradleVersion = "${gradleWrapperVersion}"
+}
+
+defaultTasks("clean", "test", "build", "quarkusBuild")
+
+// jvm:    ./gradlew clean quarkusBuild                                 ; ./gradlew dockerBuild dockerRun
+// native: ./gradlew clean quarkusBuild buildNative --docker-build=true ; ./gradlew dockerBuild dockerRun
+apply(from: "${projectDir}/docker.gradle")

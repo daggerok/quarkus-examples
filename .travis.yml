@@ -14,16 +14,13 @@ addons:
   apt:
     update: true
     packages:
-      - docker-compose
+      - docker-ce
       - httpie
       - sudo
       - lsof
       - wget
       - bash
       - curl
-      - jq
-      - unzip
-      - docker-ce
 install: true
 before_install:
   - docker-compose -v
