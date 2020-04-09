@@ -1,0 +1,6 @@
+*
+!build/lib/*
+!build/*-runner*
+!target/lib/*
+!target/*-runner*
+!src/main/docker/*

@@ -7,16 +7,16 @@
 #
 # Then, build the image with:
 #
-# docker build -f src/main/docker/Dockerfile.native -t quarkus/qute-gradle-mvc .
+# docker build -f src/main/docker/Dockerfile.gradle.native -t quarkus/reactive-qute .
 #
 # Then run the container using:
 #
-# docker run -i --rm -p 8080:8080 quarkus/qute-gradle-mvc
+# docker run -i --rm -p 8080:8080 quarkus/reactive-qute
 #
 ###
 FROM registry.access.redhat.com/ubi8/ubi-minimal:8.1
 WORKDIR /work/
-COPY build/*-runner /work/application
+COPY ./build/*-runner /work/application
 
 # set up permissions for user `1001`
 RUN chmod 775 /work /work/application \

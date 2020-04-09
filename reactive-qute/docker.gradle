@@ -7,7 +7,7 @@ String getOrUndefined(String envVar, String sysProp, String defaultValue = "unde
 def os = org.apache.tools.ant.taskdefs.condition.Os
 def var = [
     isWindows: os.isFamily(os.FAMILY_WINDOWS),
-    dockerFile: "" != getOrUndefined("QUARKUS_NATIVE", "quarkus.native", "") ? "Dockerfile.native" : "Dockerfile.jvm",
+    dockerFile: "" != getOrUndefined("QUARKUS_NATIVE", "quarkus.native", "") ? "Dockerfile.gradle.native" : "Dockerfile.gradle.jvm",
     tag: """${getOrUndefined("DOCKER_USERNAME", "docker.username", "daggerok")}/${project.name}:${project.version}""",
 ]
 
