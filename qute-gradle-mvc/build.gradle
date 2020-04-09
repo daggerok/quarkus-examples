@@ -10,9 +10,13 @@ repositories {
 }
 
 dependencies {
-    implementation("io.quarkus:quarkus-resteasy-qute")
     implementation(enforcedPlatform("io.quarkus:quarkus-universe-bom:${quarkusVersion}"))
+    implementation("io.quarkus:quarkus-resteasy-mutiny")
+    implementation("io.quarkus:quarkus-resteasy-jsonb")
+    implementation("io.quarkus:quarkus-resteasy-qute")
     implementation("io.quarkus:quarkus-resteasy")
+    implementation("io.quarkus:quarkus-vertx")
+    implementation("io.smallrye.reactive:smallrye-reactive-streams-operators:1.0.12")
     // implementation("javax.activation:activation:1.1.1")
 
     testImplementation("io.quarkus:quarkus-junit5")
@@ -26,6 +30,7 @@ compileJava {
 
 compileTestJava {
     options.encoding = "${encoding}"
+    dependsOn("assemble")
 }
 
 java {
@@ -58,7 +63,7 @@ wrapper {
     gradleVersion = "${gradleWrapperVersion}"
 }
 
-defaultTasks("clean", "test", "build", "quarkusBuild")
+defaultTasks("assemble", "quarkusBuild", "build")
 
 // jvm:    ./gradlew clean quarkusBuild                                 ; ./gradlew dockerBuild dockerRun
 // native: ./gradlew clean quarkusBuild buildNative --docker-build=true ; ./gradlew dockerBuild dockerRun

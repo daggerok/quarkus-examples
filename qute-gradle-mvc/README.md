@@ -15,17 +15,26 @@ mvn io.quarkus:quarkus-maven-plugin:1.3.2.Final:create \
     -DbuildTool=gradle
 ```
 
-## jvm
+## JVM
 
 ```bash
 ./gradlew clean quarkusBuild ; ./gradlew dockerBuild dockerRun
 ```
 
-## native
+## Native
 
 ```bash
 ./gradlew clean quarkusBuild buildNative --docker-build=true ; QUARKUS_NATIVE=true ./gradlew dockerBuild dockerRun
 ```
+
+## Resources
+
+* https://quarkus.io/blog/qute/
+* https://smallrye.io/smallrye-mutiny/
+* https://quarkus.io/guides/vertx
+* https://quarkus.io/guides/getting-started-reactive#mutiny
+* https://quarkus.io/guides/context-propagation
+* https://smallrye.io/smallrye-reactive-streams-operators/
 
 ## Running the application in dev mode
 

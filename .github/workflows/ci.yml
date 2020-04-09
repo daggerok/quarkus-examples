@@ -20,7 +20,10 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
       - run: sudo apt-get install --fix-missing httpie
-      - run: cd $GITHUB_WORKSPACE/qute-gradle-mvc && ./gradlew clean quarkusBuild dockerBuild dockerStart
+      - run: cd $GITHUB_WORKSPACE/qute-gradle-mvc && ./gradlew build -x test
+      - run: cd $GITHUB_WORKSPACE/qute-gradle-mvc && ( ./gradlew quarkusDev || true ) &
+      - run: cd $GITHUB_WORKSPACE/qute-gradle-mvc && ./gradlew --stop || echo ...
+      - run: cd $GITHUB_WORKSPACE/qute-gradle-mvc && ./gradlew quarkusBuild dockerBuild dockerStart
       - run: |
           cd $GITHUB_WORKSPACE/qute-gradle-mvc
           ( ./gradlew dockerLogs & ) || true
@@ -46,7 +49,10 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
       - run: sudo apt-get install --fix-missing httpie
-      - run: cd $GITHUB_WORKSPACE/qute-gradle-mvc && ./gradlew clean quarkusBuild buildNative --docker-build=true
+      - run: cd $GITHUB_WORKSPACE/qute-gradle-mvc && ./gradlew assemble
+      - run: cd $GITHUB_WORKSPACE/qute-gradle-mvc && ( ./gradlew quarkusDev || true ) &
+      - run: cd $GITHUB_WORKSPACE/qute-gradle-mvc && ./gradlew --stop || echo ...
+      - run: cd $GITHUB_WORKSPACE/qute-gradle-mvc && ./gradlew quarkusBuild buildNative --docker-build=true
       - run: cd $GITHUB_WORKSPACE/qute-gradle-mvc && QUARKUS_NATIVE=1 ./gradlew dockerBuild dockerStart
       - run: |
           cd $GITHUB_WORKSPACE/qute-gradle-mvc

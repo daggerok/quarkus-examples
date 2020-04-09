@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+{@com.github.daggerok.qute.beans.Client client}
+{@com.github.daggerok.qute.beans.Foo foo}
+{@com.github.daggerok.qute.beans.Bar bar}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Grrr.. {foo.hello} {hello}</title>
+</head>
+<body>
+
+<ul>
+{#each this}
+    <li>{count} {it}</li>
+{/each}
+</ul>
+
+<p>{foo.hello}</p>
+
+<ul>
+    {#each client.uni}
+    <li>{count} {it}</li>
+    {/each}
+</ul>
+
+{hello}
+
+<ul>
+    {#each bar.baz}
+    <li>{count} {it}</li>
+    {/each}
+</ul>
+
+Hello!
+
+<ul>
+    {#each client.multi}
+    <li>{count} {it}</li>
+    {/each}
+</ul>
+
+</body>
+</html>
