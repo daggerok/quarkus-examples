@@ -2,7 +2,35 @@ name: CI
 on: [push]
 env:
   JDK_11_VERSION: 11
+  JDK_17_VERSION: 17
 jobs:
+  quarkus-jpastreamer:
+    runs-on: ubuntu-latest
+    name: quarkus-jpastreamer maven jvm 17
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/cache@v3
+        id: java-cache
+        with:
+          path: |
+            ./.n
+            ./.m2
+            ./.docker
+            ~/.m2/repository
+            !~/.m2/repository/daggerok
+            !~/.m2/repository/com/github/daggerok
+          key: ${{ runner.os }}-${{ hashFiles('**/pom.xml', '**/gradle.*', '**/*.gradle') }}
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: ${{ env.JDK_17_VERSION }}
+      - run: docker run -d --rm --platform=linux/amd64 --name restsql-mysql-sakila -p 3306:3306 restsql/mysql-sakila
+      - run: sleep 30 ; docker ps
+      - run: ./mvnw -f quarkus-jpastreamer clean package
+      #- run: sudo apt-get install --fix-missing httpie
+      #- run: cd $GITHUB_WORKSPACE/reactive-qute && ./mvnw docker:build docker:start
+      #- run: http get :8080
+      #- run: cd $GITHUB_WORKSPACE/reactive-qute && ./mvnw docker:stop docker:remove
   reactive-qute-maven-linux-jvm-build:
     runs-on: ubuntu-latest
     name: reactive-qute maven jvm 11
