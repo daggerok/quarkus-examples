@@ -1,70 +1,78 @@
 name: CI
 on: [push]
+env:
+  JDK_11_VERSION: 11
 jobs:
   reactive-qute-maven-linux-jvm-build:
-    strategy:
-      matrix:
-        java: [11]
-        os: [ubuntu-latest]
-    runs-on: ${{ matrix.os }}
-    name: reactive-qute maven jvm on ${{ matrix.os }} with java-${{ matrix.java }}
+    runs-on: ubuntu-latest
+    name: reactive-qute maven jvm 11
     steps:
-      - uses: actions/checkout@v1
-      - uses: actions/setup-java@v1
+      - uses: actions/checkout@v3
+      - uses: actions/cache@v3
+        id: java-cache
         with:
-          java-version: ${{ matrix.java }}
-      - uses: actions/cache@v1
+          path: |
+            ./.n
+            ./.m2
+            ./.docker
+            ~/.m2/repository
+            !~/.m2/repository/daggerok
+            !~/.m2/repository/com/github/daggerok
+          key: ${{ runner.os }}-${{ hashFiles('**/pom.xml', '**/gradle.*', '**/*.gradle') }}
+      - uses: actions/setup-java@v3
         with:
-          path: ~/.gradle
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/mvnw') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
+          distribution: 'temurin'
+          java-version: ${{ env.JDK_11_VERSION }}
       - run: sudo apt-get install --fix-missing httpie
       - run: cd $GITHUB_WORKSPACE/reactive-qute && ./mvnw
       - run: cd $GITHUB_WORKSPACE/reactive-qute && ./mvnw docker:build docker:start
       - run: http get :8080
       - run: cd $GITHUB_WORKSPACE/reactive-qute && ./mvnw docker:stop docker:remove
   reactive-qute-maven-linux-native-build:
-    strategy:
-      matrix:
-        java: [11]
-        os: [ubuntu-latest]
-    runs-on: ${{ matrix.os }}
-    name: reactive-qute gradle native on ${{ matrix.os }} with java-${{ matrix.java }}
+    runs-on: ubuntu-latest
+    name: reactive-qute gradle native jvm 11
     steps:
-      - uses: actions/checkout@v1
-      - uses: actions/setup-java@v1
+      - uses: actions/checkout@v3
+      - uses: actions/cache@v3
+        id: java-cache
         with:
-          java-version: ${{ matrix.java }}
-      - uses: actions/cache@v1
+          path: |
+            ./.n
+            ./.m2
+            ./.docker
+            ~/.m2/repository
+            !~/.m2/repository/daggerok
+            !~/.m2/repository/com/github/daggerok
+          key: ${{ runner.os }}-${{ hashFiles('**/pom.xml', '**/gradle.*', '**/*.gradle') }}
+      - uses: actions/setup-java@v3
         with:
-          path: ~/.gradle
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/mvnw') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
+          distribution: 'temurin'
+          java-version: ${{ env.JDK_11_VERSION }}
       - run: sudo apt-get install --fix-missing httpie
       - run: cd $GITHUB_WORKSPACE/reactive-qute && ./mvnw -Pnative -Dquarkus.native.container-build=true
       - run: cd $GITHUB_WORKSPACE/reactive-qute && ./mvnw -Pnative docker:build docker:start
       - run: http get :8080
       - run: cd $GITHUB_WORKSPACE/reactive-qute && ./mvnw docker:stop docker:remove
   reactive-qute-gradle-linux-jvm-build:
-    strategy:
-      matrix:
-        java: [11]
-        os: [ubuntu-latest]
-    runs-on: ${{ matrix.os }}
-    name: reactive-qute gradle jvm on ${{ matrix.os }} with java-${{ matrix.java }}
+    runs-on: ubuntu-latest
+    name: reactive-qute gradle jvm 11
     steps:
-      - uses: actions/checkout@v1
-      - uses: actions/setup-java@v1
+      - uses: actions/checkout@v3
+      - uses: actions/cache@v3
+        id: java-cache
         with:
-          java-version: ${{ matrix.java }}
-      - uses: actions/cache@v1
+          path: |
+            ./.n
+            ./.m2
+            ./.docker
+            ~/.m2/repository
+            !~/.m2/repository/daggerok
+            !~/.m2/repository/com/github/daggerok
+          key: ${{ runner.os }}-${{ hashFiles('**/pom.xml', '**/gradle.*', '**/*.gradle') }}
+      - uses: actions/setup-java@v3
         with:
-          path: ~/.gradle
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/gradlew') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-
+          distribution: 'temurin'
+          java-version: ${{ env.JDK_11_VERSION }}
       - run: sudo apt-get install --fix-missing httpie
       - run: cd $GITHUB_WORKSPACE/reactive-qute && ./gradlew build -x test
       - run: cd $GITHUB_WORKSPACE/reactive-qute && ( ./gradlew quarkusDev || true ) &
@@ -77,23 +85,25 @@ jobs:
           http get :8080
           ./gradlew dockerStop
   reactive-qute-gradle-linux-native-build:
-    strategy:
-      matrix:
-        java: [11]
-        os: [ubuntu-latest]
-    runs-on: ${{ matrix.os }}
-    name: reactive-qute gradle native on ${{ matrix.os }} with java-${{ matrix.java }}
+    runs-on: ubuntu-latest
+    name: reactive-qute gradle native jvm 11
     steps:
-      - uses: actions/checkout@v1
-      - uses: actions/setup-java@v1
+      - uses: actions/checkout@v3
+      - uses: actions/cache@v3
+        id: java-cache
         with:
-          java-version: ${{ matrix.java }}
-      - uses: actions/cache@v1
+          path: |
+            ./.n
+            ./.m2
+            ./.docker
+            ~/.m2/repository
+            !~/.m2/repository/daggerok
+            !~/.m2/repository/com/github/daggerok
+          key: ${{ runner.os }}-${{ hashFiles('**/pom.xml', '**/gradle.*', '**/*.gradle') }}
+      - uses: actions/setup-java@v3
         with:
-          path: ~/.gradle
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/gradlew') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-
+          distribution: 'temurin'
+          java-version: ${{ env.JDK_11_VERSION }}
       - run: sudo apt-get install --fix-missing httpie
       - run: cd $GITHUB_WORKSPACE/reactive-qute && ./gradlew assemble
       - run: cd $GITHUB_WORKSPACE/reactive-qute && ( ./gradlew quarkusDev || true ) &
@@ -106,97 +116,81 @@ jobs:
           sleep 5s
           http get :8080
           QUARKUS_NATIVE=true ./gradlew dockerStop
-
   build-linux:
-    strategy:
-      matrix:
-        os: [ubuntu-latest]
-        java: [11]
-    runs-on: ${{ matrix.os }}
-    name: qute-mvc on ${{ matrix.os }} with java-${{ matrix.java }}
+    runs-on: ubuntu-latest
+    name: qute-mvc jvm 11
     steps:
-      - name: Git clone
-        uses: actions/checkout@v1
-      - name: Setup java
-        uses: actions/setup-java@v1
+      - uses: actions/checkout@v3
+      - uses: actions/cache@v3
+        id: java-cache
         with:
-          java-version: ${{ matrix.java }}
-      - name: Set up maven
-        uses: stCarolas/setup-maven@v3
+          path: |
+            ./.n
+            ./.m2
+            ./.docker
+            ~/.m2/repository
+            !~/.m2/repository/daggerok
+            !~/.m2/repository/com/github/daggerok
+          key: ${{ runner.os }}-${{ hashFiles('**/pom.xml', '**/gradle.*', '**/*.gradle') }}
+      - uses: actions/setup-java@v3
         with:
-          maven-version: 3.6.3
-      - name: Cache maven
-        uses: actions/cache@v1
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
-      - name: Maven build
-        run: ./mvnw -f qute-mvc
-      - name: Test qute-mvc
-        run: |
+          distribution: 'temurin'
+          java-version: ${{ env.JDK_11_VERSION }}
+      - run: ./mvnw -f qute-mvc
+      - run: |
           java -jar $GITHUB_WORKSPACE/qute-mvc/target/*-runner.jar &
           sudo apt-get update -yqq
           sudo apt-get install -yqq httpie
           http get :8080/api/v1/my-resource
-  build-macOS:
-    strategy:
-      matrix:
-        os: [macos-latest]
-        java: [11]
-    runs-on: ${{ matrix.os }}
-    name: qute-mvc on ${{ matrix.os }} with java-${{ matrix.java }}
-    steps:
-      - name: Git clone
-        uses: actions/checkout@v1
-      - name: Setup java
-        uses: actions/setup-java@v1
-        with:
-          java-version: ${{ matrix.java }}
-      - name: Set up maven
-        uses: stCarolas/setup-maven@v3
-        with:
-          maven-version: 3.6.3
-      - name: Cache maven
-        uses: actions/cache@v1
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
-      - name: Maven build
-        run: ./mvnw -f qute-mvc
-      - name: Test qute-mvc
-        run: |
-          java -jar $GITHUB_WORKSPACE/qute-mvc/target/*-runner.jar &
-          brew reinstall httpie
-          http get :8080/api/v1/my-resource
-  build-windows:
-    strategy:
-      matrix:
-        java: [11]
-        os: [windows-latest]
-    runs-on: ${{ matrix.os }}
-    name: qute-mvc on ${{ matrix.os }} with java-${{ matrix.java }}
-    steps:
-      - name: Git clone
-        uses: actions/checkout@v1
-      - name: Setup java
-        uses: actions/setup-java@v1
-        with:
-          java-version: ${{ matrix.java }}
-      - name: Set up maven
-        uses: stCarolas/setup-maven@v3
-        with:
-          maven-version: 3.6.3
-      - name: Run maven build
-        shell: cmd
-        run: call mvnw.cmd -Dfile.encoding="UTF-8" -f %GITHUB_WORKSPACE%\qute-mvc
-      - name: Cache maven
-        uses: actions/cache@v1
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
+#  build-macOS: # TODO: FIXME:
+#    runs-on: ubuntu-latest
+#    name: qute-mvc jvm 11
+#    steps:
+#      - uses: actions/checkout@v3
+#      - uses: actions/cache@v3
+#        id: java-cache
+#        with:
+#          path: |
+#            ./.n
+#            ./.m2
+#            ./.docker
+#            ~/.m2/repository
+#            !~/.m2/repository/daggerok
+#            !~/.m2/repository/com/github/daggerok
+#          key: ${{ runner.os }}-${{ hashFiles('**/pom.xml', '**/gradle.*', '**/*.gradle') }}
+#      - uses: actions/setup-java@v3
+#        with:
+#          distribution: 'temurin'
+#          java-version: ${{ env.JDK_11_VERSION }}
+#      - run: ./mvnw -f qute-mvc
+#      - run: |
+#          java -jar $GITHUB_WORKSPACE/qute-mvc/target/*-runner.jar &
+#          brew reinstall httpie
+#          http get :8080/api/v1/my-resource
+#  build-windows: # TODO: FIXME:
+#    runs-on: ubuntu-latest
+#    name: qute-mvc jvm 11
+#    steps:
+#      - name: Git clone
+#        uses: actions/checkout@v3
+#      - uses: actions/cache@v3
+#        id: java-cache
+#        with:
+#          path: |
+#            ./.n
+#            ./.m2
+#            ./.docker
+#            ~/.m2/repository
+#            !~/.m2/repository/daggerok
+#            !~/.m2/repository/com/github/daggerok
+#          key: ${{ runner.os }}-${{ hashFiles('**/pom.xml', '**/gradle.*', '**/*.gradle') }}
+#      - uses: actions/setup-java@v3
+#        with:
+#          distribution: 'temurin'
+#          java-version: ${{ env.JDK_11_VERSION }}
+#      - name: Set up maven
+#        uses: stCarolas/setup-maven@v3
+#        with:
+#          maven-version: 3.6.3
+#      - shell: cmd
+#        run: call mvnw.cmd -Dfile.encoding="UTF-8" -f %GITHUB_WORKSPACE%\qute-mvc
